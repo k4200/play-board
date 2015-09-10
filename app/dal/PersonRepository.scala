@@ -28,14 +28,14 @@ class PersonRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(impl
    */
   private class PeopleTable(tag: Tag) extends Table[Person](tag, "people") {
 
-    /** The ID column, which is the primary key, and auto incremented */
+    /** Fields **/
     def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
 
-    /** The name column */
-    def name = column[String]("name")
+    def email = column[String]("email")
 
-    /** The age column */
-    def age = column[Int]("age")
+    def password = column[String]("password")
+
+    def name = column[String]("name")
 
     /**
      * This is the tables default "projection".
@@ -45,7 +45,7 @@ class PersonRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(impl
      * In this case, we are simply passing the id, name and page parameters to the Person case classes
      * apply and unapply methods.
      */
-    def * = (id, name, age) <> ((Person.apply _).tupled, Person.unapply)
+    def * = (id, email, password, name) <> ((Person.apply _).tupled, Person.unapply)
   }
 
   /**
@@ -59,16 +59,16 @@ class PersonRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(impl
    * This is an asynchronous operation, it will return a future of the created person, which can be used to obtain the
    * id for that person.
    */
-  def create(name: String, age: Int): Future[Person] = db.run {
+  def create(email: String, password: String, name: String): Future[Person] = db.run {
     // We create a projection of just the name and age columns, since we're not inserting a value for the id column
-    (people.map(p => (p.name, p.age))
+    (people.map(p => (p.email, p.password, p.name))
       // Now define it to return the id, because we want to know what id was generated for the person
       returning people.map(_.id)
       // And we define a transformation for the returned value, which combines our original parameters with the
       // returned id
-      into ((nameAge, id) => Person(id, nameAge._1, nameAge._2))
+      into ((nameAge, id) => Person(id, nameAge._1, nameAge._2, nameAge._3))
     // And finally, insert the person into the database
-    ) += (name, age)
+    ) += (email, password, name)
   }
 
   /**
