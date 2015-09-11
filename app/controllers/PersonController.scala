@@ -23,8 +23,8 @@ class PersonController @Inject() (repo: PersonRepository, val messagesApi: Messa
   val personForm: Form[CreatePersonForm] = Form {
     mapping(
       "email" -> email,
-      "password" -> nonEmptyText,
-      "name" -> nonEmptyText
+      "password" -> text(minLength = 10),
+      "name" -> text(minLength = 10)
     )(CreatePersonForm.apply)(CreatePersonForm.unapply)
   }
 
