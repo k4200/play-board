@@ -1,5 +1,5 @@
 $ ->
-  $.get "/users", (users) ->
+  $.get "/users.json", (users) ->
     $.each users, (index, user) ->
       name = $("<span>").addClass("name").text user.name
       age = $("<span>").addClass("email").text user.email
