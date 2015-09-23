@@ -1,0 +1,15 @@
+@(user: Form[LoginForm])(implicit messages: Messages)
+
+@import helper._
+
+@main("Login") {
+
+  @form(routes.UserController.authenticate) {
+    @inputText(user("email"))
+    @inputPassword(user("password"))
+
+      <div class="buttons">
+          <input type="submit" value="login"/>
+      </div>
+    }
+}

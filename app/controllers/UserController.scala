@@ -28,6 +28,13 @@ class UserController @Inject() (repo: UserRepository, val messagesApi: MessagesA
     )(CreateUserForm.apply)(CreateUserForm.unapply)
   }
 
+  val loginForm: Form[LoginForm] = Form {
+    mapping(
+      "email" -> email,
+      "password" -> nonEmptyText
+    )(LoginForm.apply)(LoginForm.unapply)
+  }
+
   /**
    * The index action.
    */
@@ -67,6 +74,15 @@ class UserController @Inject() (repo: UserRepository, val messagesApi: MessagesA
       Ok(Json.toJson(users))
     }
   }
+
+  def login = Action {
+    Ok(views.html.login(loginForm))
+  }
+
+  def authenticate = TODO
+
+  def logout = TODO
+
 }
 
 /**
@@ -77,3 +93,6 @@ class UserController @Inject() (repo: UserRepository, val messagesApi: MessagesA
  * that is generated once it's created.
  */
 case class CreateUserForm(email: String, password: String, name: String)
+
+
+case class LoginForm(email: String, password: String)
