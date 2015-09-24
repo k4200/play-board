@@ -79,7 +79,18 @@ class UserController @Inject() (repo: UserRepository, val messagesApi: MessagesA
     Ok(views.html.login(loginForm))
   }
 
-  def authenticate = TODO
+  def authenticate = Action { implicit request =>
+    loginForm.bindFromRequest.fold(
+      errors => {
+        println("error")
+        BadRequest(views.html.login(errors))
+      },
+      success => {
+        println("success")
+        Ok(views.html.login(loginForm))
+      }
+    )
+  }
 
   def logout = TODO
 
