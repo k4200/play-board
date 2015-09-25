@@ -85,9 +85,14 @@ class UserController @Inject() (repo: UserRepository, val messagesApi: MessagesA
       Future(BadRequest(views.html.login(form)))
     } else {
       val formData = form.get
-      repo.findByEmailAndPassword(formData.email, formData.password).map { user =>
-        println(user)
-        Ok(views.html.login(loginForm))
+      repo.findByEmailAndPassword(formData.email, formData.password).map { optUser =>
+        optUser match {
+          case Some(user) =>
+            println(user)
+            Ok(views.html.login(loginForm))
+          case None =>
+            Forbidden("User name or password is wrong!")
+        }
       }
     }
   }
