@@ -77,4 +77,12 @@ class UserRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(implic
   def list(): Future[Seq[User]] = db.run {
     users.result
   }
+
+  def findByEmailAndPassword(email: String, password: String): Future[User] = db.run {
+    users.filter(user => user.email === email && user.password === password).result.head
+  }
+
+  def findByEmail(email: String): Future[User] = db.run {
+    users.filter(user => user.email === email).result.head
+  }
 }
