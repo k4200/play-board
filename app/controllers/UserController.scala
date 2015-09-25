@@ -79,17 +79,16 @@ class UserController @Inject() (repo: UserRepository, val messagesApi: MessagesA
     Ok(views.html.login(loginForm))
   }
 
-  def authenticate = Action { implicit request =>
+  def authenticate = Action.async { implicit request =>
     val form = loginForm.bindFromRequest
     if (form.hasErrors) {
-      BadRequest(views.html.login(form))
+      Future(BadRequest(views.html.login(form)))
     } else {
       val formData = form.get
-      val user = repo.findByEmailAndPassword(formData.email, formData.password)
-      println(user)
-
-
-      Ok(views.html.login(loginForm))
+      repo.findByEmailAndPassword(formData.email, formData.password).map { user =>
+        println(user)
+        Ok(views.html.login(loginForm))
+      }
     }
   }
 
